@@ -428,6 +428,29 @@ nav::after {
   text-decoration: none; transform: translateY(100%); transition: transform 0.3s ease;
 }
 .product-wa-btn svg { width: 14px; height: 14px; fill: var(--bg); }
+
+/* ── AGOTADO overlay ── */
+.product-agotado-overlay {
+  position: absolute; inset: 0;
+  background: rgba(33,44,90,0.72);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3; pointer-events: none;
+}
+.product-agotado-overlay span {
+  font-family: 'Raleway', sans-serif; font-weight: 300;
+  font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--shadow); border: 1px solid rgba(33,44,90,0.35);
+  padding: 5px 14px; background: rgba(240,235,225,0.92);
+color: #f0ebe1;
+border: 1px solid rgba(240,235,225,0.3);
+background: transparent;
+}
+.product-card.agotado .product-img img { filter: grayscale(40%); }
+.product-card.agotado .product-wa-btn { display: none; }
+.product-card.agotado { cursor: default; }
+.product-card.agotado:hover { border-color: transparent; box-shadow: none; }
+
+
 .product-card:hover .product-wa-btn { transform: translateY(0); }
 
 .product-info { padding: 22px 22px 26px; border-top: 1px solid var(--border); }
@@ -448,6 +471,18 @@ nav::after {
   font-family: 'Cormorant Garamond', serif; font-style: italic;
   font-size: 24px; color: var(--shadow);
 }
+
+
+.product-card.agotado .product-price {
+  color: var(--text-mid); font-size: 18px;
+}
+.product-card.agotado .product-price::after {
+  content: ' · No disponible';
+  font-family: 'Raleway', sans-serif; font-style: normal;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-soft); display: block; margin-top: 4px;
+}
+
 
 /* ══════════════════════════════
    ABOUT — dark frame (v1) + ivory content (v2)
@@ -3793,6 +3828,7 @@ footer::before {
           <div class="product-price">Bs. 50</div>
         </div>
       </div>
+      <!--
       <div class="product-card" data-category="bebes">
         <div class="product-img">
         <div class="carousel">
@@ -3834,6 +3870,7 @@ footer::before {
           <div class="product-price">Bs. 100</div>
         </div>
       </div>
+    -->
       <div class="product-card" data-category="bebes">
         <div class="product-img">
         <div class="carousel">
@@ -7114,7 +7151,7 @@ footer::before {
           <div class="product-price">Bs. 90</div>
         </div>
       </div>
-      <div class="product-card" data-category="ninos">
+      <div class="product-card agotado" data-category="ninos">
         <div class="product-img">
         <div class="carousel">
           <div class="carousel-track">
@@ -7147,6 +7184,7 @@ footer::before {
             Consultar disponibilidad
           </a>
         </div>
+        <div class="product-agotado-overlay"><span>Agotado</span></div>
         </div>
         <div class="product-info">
           <div class="product-category">Niños · Niño</div>
@@ -7155,7 +7193,7 @@ footer::before {
           <div class="product-price">Bs. 80</div>
         </div>
       </div>
-      <div class="product-card" data-category="ninos">
+      <div class="product-card agotado" data-category="ninos">
         <div class="product-img">
         <div class="carousel">
           <div class="carousel-track">
@@ -7188,6 +7226,7 @@ footer::before {
             Consultar disponibilidad
           </a>
         </div>
+        <div class="product-agotado-overlay"><span>Agotado</span></div>
         </div>
         <div class="product-info">
           <div class="product-category">Niños · Niño</div>
@@ -7196,7 +7235,7 @@ footer::before {
           <div class="product-price">Bs. 85</div>
         </div>
       </div>
-      <div class="product-card" data-category="ninos">
+      <div class="product-card agotado" data-category="ninos">
         <div class="product-img">
         <div class="carousel">
           <div class="carousel-track">
@@ -7229,6 +7268,7 @@ footer::before {
             Consultar disponibilidad
           </a>
         </div>
+                <div class="product-agotado-overlay"><span>Agotado</span></div>
         </div>
         <div class="product-info">
           <div class="product-category">Niños · Niño</div>
@@ -7319,7 +7359,7 @@ footer::before {
           <div class="product-price">Bs. 75</div>
         </div>
       </div>
-      <div class="product-card" data-category="ninos">
+      <div class="product-card agotado" data-category="ninos">
         <div class="product-img">
         <div class="carousel">
           <div class="carousel-track">
@@ -7352,6 +7392,7 @@ footer::before {
             Consultar disponibilidad
           </a>
         </div>
+        <div class="product-agotado-overlay"><span>Agotado</span></div>
         </div>
         <div class="product-info">
           <div class="product-category">Niños · Niño</div>
@@ -7360,7 +7401,7 @@ footer::before {
           <div class="product-price">Bs. 85</div>
         </div>
       </div>
-      <div class="product-card" data-category="ninos">
+      <div class="product-card agotado" data-category="ninos">
         <div class="product-img">
         <div class="carousel">
           <div class="carousel-track">
@@ -7393,6 +7434,7 @@ footer::before {
             Consultar disponibilidad
           </a>
         </div>
+        <div class="product-agotado-overlay"><span>Agotado</span></div>
         </div>
         <div class="product-info">
           <div class="product-category">Niños · Niño</div>
