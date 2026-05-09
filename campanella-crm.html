@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Campanella — Baby & Kids Boutique</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#14192b;--surface:#1c2238;--surface2:#222a42;
+  --border:#2e3a58;--border2:#3a4a6a;
+  --text:#e8dfc8;--text-muted:#7a8aaa;--text-dim:#4a5a7a;
+  --gold:#C9A96E;--gold-light:#E8D5A3;--gold-dark:#A87C2A;
+  --rose:#D4A5A5;--sage:#9CAF88;--shadow:#212c5a;
+  --fs:16px; /* base — 1rem = 16px, smallest text = 1.5rem × 0.625 = ~15px via .xs class */
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:var(--fs);}
+body{background:var(--bg);color:var(--text);font-family:'Raleway',sans-serif;min-height:100vh;font-size:1rem;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* font scale: xs=1.5rem(24px) sm=1.6rem sm2=1.7rem base=1rem(16px) — wait, requirement:
+   smallest visible text must be 1.5rem. So base = 10px so 1.5rem = 15px ≈ readable.
+   Let's use html font-size 10px so rem scale is clean */
+
+/* Re-set: html font-size = 10px → 1rem=10px, 1.5rem=15px (smallest), 1.6rem=16px, 2rem=20px */
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;overflow-x:auto;gap:0;flex-shrink:0;}
+.brand{padding:1.4rem 0;margin-right:2.4rem;flex-shrink:0;text-align:center;line-height:1.1;}
+.brand-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:2.6rem;color:var(--gold);letter-spacing:.04em;display:block;}
+.brand-tag{font-family:'Raleway',sans-serif;font-size:1.5rem;color:var(--gold-light);letter-spacing:.35em;text-transform:uppercase;display:block;margin-top:.2rem;opacity:.8;}
+.tabs{display:flex;gap:0;flex-shrink:0;}
+.tab-btn{padding:1.8rem 1.4rem;border:none;background:transparent;color:var(--text-muted);font-weight:500;font-size:1.5rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Raleway',sans-serif;letter-spacing:.12em;text-transform:uppercase;transition:all .2s;}
+.tab-btn:hover{color:var(--gold-light);}
+.tab-btn.active{color:var(--gold);border-bottom:2px solid var(--gold);}
+
+/* LAYOUT */
+.body{padding:2.4rem 2rem;max-width:1200px;margin:0 auto;}
+.page-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:3rem;color:var(--gold-light);margin-bottom:.4rem;font-weight:400;}
+.page-sub{font-size:1.5rem;color:var(--text-muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:2.4rem;}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1.4rem;margin-bottom:2rem;}
+.stat{background:var(--surface);border-radius:1.2rem;padding:2rem 1.6rem;border:1px solid var(--border);position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));}
+.stat-icon{position:absolute;right:1.4rem;top:1.6rem;font-size:2.2rem;opacity:.08;}
+.stat-label{font-size:1.5rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-bottom:.8rem;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;color:var(--gold-light);}
+
+/* CARDS */
+.card{background:var(--surface);border-radius:1.4rem;padding:2.2rem;border:1px solid var(--border);margin-bottom:1.8rem;}
+.card h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.9rem;color:var(--gold);margin-bottom:1.6rem;font-weight:400;}
+
+/* ROWS */
+.row{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.6rem;border-radius:1rem;margin-bottom:.6rem;border:1px solid var(--border);gap:.8rem;flex-wrap:wrap;background:var(--bg);transition:border-color .15s,background .15s;}
+.row:hover{border-color:var(--gold-dark);background:var(--surface2);}
+
+/* BADGES */
+.badge{padding:.3rem 1rem;border-radius:2rem;font-size:1.5rem;font-weight:600;white-space:nowrap;letter-spacing:.04em;font-family:'Raleway',sans-serif;display:inline-flex;align-items:center;}
+.badge-talla{background:rgba(201,169,110,.15);color:var(--gold);border:1px solid var(--gold-dark);}
+.badge-price{background:rgba(201,169,110,.1);color:var(--gold-light);border:1px solid rgba(201,169,110,.3);}
+.badge-qty{background:rgba(232,213,163,.08);color:var(--text-muted);}
+.badge-qty-low{background:rgba(212,165,165,.15);color:#e8a0a0;border:1px solid rgba(212,165,165,.4);}
+.badge-cat{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);}
+.badge-f{background:rgba(212,165,165,.12);color:#e8b0b0;border:1px solid rgba(212,165,165,.3);}
+.badge-m{background:rgba(33,44,90,.6);color:#a0b4e0;border:1px solid rgba(80,100,160,.4);}
+.badge-u{background:rgba(156,175,136,.12);color:#b0c8a0;border:1px solid rgba(156,175,136,.35);}
+.badge-exc{background:rgba(156,175,136,.12);color:#b0c8a0;border:1px solid rgba(156,175,136,.35);}
+.badge-bue{background:rgba(201,169,110,.12);color:var(--gold);border:1px solid rgba(201,169,110,.3);}
+.badge-reg{background:rgba(212,165,165,.12);color:#e8a0a0;border:1px solid rgba(212,165,165,.3);}
+.tag-etiq{font-size:1.5rem;color:var(--sage);}
+.tag-no-etiq{font-size:1.5rem;color:var(--rose);opacity:.7;}
+
+/* BUTTONS */
+.btn{padding:1rem 2.2rem;border-radius:.8rem;border:none;cursor:pointer;font-weight:700;font-size:1.5rem;font-family:'Raleway',sans-serif;letter-spacing:.12em;text-transform:uppercase;transition:all .2s;white-space:nowrap;}
+.btn-primary{background:var(--gold);color:var(--bg);}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-ghost{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.btn-danger{background:rgba(212,165,165,.15);color:#e8a0a0;border:1px solid rgba(212,165,165,.3);}
+.btn-sm{padding:.5rem 1rem;font-size:1.5rem;border-radius:.6rem;}
+.btn-sage{background:rgba(156,175,136,.2);color:#b0c8a0;border:1px solid rgba(156,175,136,.35);}
+
+/* INPUTS */
+.inp-group{margin-bottom:1.4rem;}
+.inp-group label{font-size:1.5rem;color:var(--text-muted);display:block;margin-bottom:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;}
+.inp-group input,.inp-group select,.search-bar,.filter-sel{width:100%;padding:1rem 1.4rem;border-radius:.8rem;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1.6rem;font-family:'Raleway',sans-serif;transition:border-color .2s;}
+.inp-group input:focus,.inp-group select:focus,.search-bar:focus{outline:none;border-color:var(--gold);}
+.search-bar{margin-bottom:1.2rem;width:100%;}
+.filter-sel{width:auto;padding:.8rem 1.2rem;font-size:1.5rem;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,14,30,.85);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.6rem;}
+.modal-box{background:var(--surface);border-radius:1.6rem;padding:2.8rem;width:100%;max-width:520px;border:1px solid var(--border2);max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.5);}
+.modal-box h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2.2rem;color:var(--gold);margin-bottom:2.2rem;font-weight:400;}
+.hidden{display:none !important;}
+
+/* GRID HELPERS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+@media(max-width:480px){.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}}
+
+/* INFO BOXES */
+.info-box{border-radius:.8rem;padding:1.2rem 1.4rem;margin-bottom:1.4rem;font-size:1.6rem;}
+.info-gold{background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.25);color:var(--text-muted);}
+.info-sage{background:rgba(156,175,136,.08);border:1px solid rgba(156,175,136,.25);color:var(--text-muted);}
+
+/* MISC */
+.flex{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
+.alerta-row{border-radius:1rem;padding:1.2rem 1.6rem;margin-bottom:.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;background:rgba(212,165,165,.06);border:1px solid rgba(212,165,165,.25);}
+.count-label{font-size:1.5rem;color:var(--text-muted);margin-bottom:1.2rem;letter-spacing:.06em;}
+.empty{text-align:center;padding:4rem;color:var(--text-dim);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.8rem;}
+.fin-row{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 0;border-bottom:1px solid var(--border);}
+.top-rank{width:2.4rem;height:2.4rem;border-radius:50%;background:rgba(201,169,110,.2);border:1px solid var(--gold-dark);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:var(--gold);flex-shrink:0;}
+canvas{max-height:220px;}
+
+/* CLIENT TABLE */
+.client-row{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.6rem;border-radius:1rem;margin-bottom:.6rem;border:1px solid var(--border);background:var(--bg);flex-wrap:wrap;gap:.8rem;}
+.client-avatar{width:3.6rem;height:3.6rem;border-radius:50%;background:rgba(201,169,110,.2);border:1px solid var(--gold-dark);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:var(--gold);flex-shrink:0;}
+
+/* RESPONSIVE */
+.filter-row{display:flex;gap:.8rem;margin-bottom:1.4rem;flex-wrap:wrap;}
+.two-charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.6rem;margin-bottom:1.8rem;}
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.2rem;}
+.two-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;}
+@media(max-width:640px){
+  html{font-size:9px;}
+  .header{padding:0 1.2rem;}
+  .body{padding:1.6rem 1.2rem;}
+  .brand-name{font-size:2.2rem;}
+  .tab-btn{padding:1.4rem 1rem;font-size:1.5rem;letter-spacing:.06em;}
+  .filter-row{flex-direction:column;}
+  .filter-sel{width:100%;}
+  .two-cols{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:380px){
+  .stat-grid{grid-template-columns:1fr;}
+  .tab-btn{padding:1.2rem .8rem;font-size:1.5rem;}
+}
+
+/* VENTA SEARCH */
+#vSearch{width:100%;padding:1rem 1.4rem;border-radius:.8rem;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1.6rem;font-family:'Raleway',sans-serif;margin-bottom:.8rem;}
+#vSearch:focus{outline:none;border-color:var(--gold);}
+#vResults{max-height:18rem;overflow-y:auto;border:1px solid var(--border);border-radius:.8rem;background:var(--bg);margin-bottom:1.2rem;}
+.v-result-item{padding:1rem 1.4rem;cursor:pointer;font-size:1.5rem;border-bottom:1px solid var(--border);transition:background .15s;}
+.v-result-item:last-child{border-bottom:none;}
+.v-result-item:hover{background:var(--surface2);}
+.v-result-item.selected{background:rgba(201,169,110,.12);border-color:var(--gold-dark);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <span class="brand-name">Campanella</span>
+    <span class="brand-tag">Baby &amp; Kids Boutique</span>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+<div class="body" id="app"></div>
+
+<!-- ══ MODAL VENTA ══ -->
+<div class="modal-overlay hidden" id="modalVenta">
+  <div class="modal-box">
+    <h3>Registrar Venta</h3>
+
+    <!-- buscar por código o nombre -->
+    <div class="inp-group">
+      <label>Buscar prenda (código, tipo, marca, talla)</label>
+      <input type="text" id="vSearch" placeholder="Ej: CAM-BB-01 · vestido · Carter's · 3M" oninput="searchItems()"/>
+      <div id="vResults" class="hidden"></div>
+    </div>
+    <div id="vItemInfo" class="info-box info-gold hidden"></div>
+    <input type="hidden" id="vItemId"/>
+
+    <div class="g2">
+      <div class="inp-group">
+        <label>Precio de venta (Bs) <span style="color:var(--gold);font-size:1.5rem">editable</span></label>
+        <input type="number" id="vPrecio" min="0" oninput="updateVInfo()"/>
+      </div>
+      <div class="inp-group"><label>Cantidad</label><input type="number" id="vQty" min="1" value="1" oninput="updateVInfo()"/></div>
+    </div>
+    <div class="inp-group">
+      <label>Cliente</label>
+      <div style="display:flex;gap:.8rem">
+        <input type="text" id="vCliente" placeholder="Nombre del cliente" list="clientList" style="flex:1"/>
+        <datalist id="clientList"></datalist>
+      </div>
+    </div>
+    <div class="inp-group"><label>Fecha</label><input type="date" id="vFecha"/></div>
+    <div id="vTotal" class="info-box info-sage hidden"></div>
+    <div class="flex">
+      <button class="btn btn-primary" onclick="regVenta()">Confirmar venta</button>
+      <button class="btn btn-ghost" onclick="closeModal('modalVenta')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CAJA ══ -->
+<div class="modal-overlay hidden" id="modalCaja">
+  <div class="modal-box">
+    <h3>Movimiento de Caja</h3>
+    <div class="inp-group"><label>Tipo</label>
+      <select id="cTipo" onchange="toggleCapital()">
+        <option value="ingreso">Ingreso ↑</option>
+        <option value="egreso">Egreso ↓</option>
+        <option value="capital">Capital inicial / Inversión ★</option>
+      </select>
+    </div>
+    <div class="g2">
+      <div class="inp-group"><label>Monto (Bs)</label><input type="number" id="cMonto" placeholder="0"/></div>
+      <div class="inp-group"><label>Fecha</label><input type="date" id="cFecha"/></div>
+    </div>
+    <div class="inp-group"><label>Concepto</label><input type="text" id="cConcepto" placeholder="Ej: Capital inicial del negocio"/></div>
+    <div class="inp-group" id="catGroup"><label>Categoría</label>
+      <select id="cCat">
+        <option>Ventas</option><option>Proveedor</option><option>Stock</option>
+        <option>Gastos operativos</option><option>Transporte</option><option>Capital</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="flex">
+      <button class="btn btn-primary" onclick="regCaja()">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeModal('modalCaja')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL INVENTARIO ══ -->
+<div class="modal-overlay hidden" id="modalInv">
+  <div class="modal-box">
+    <h3 id="mInvTitle">Nueva Prenda</h3>
+    <input type="hidden" id="iEditId"/>
+    <div class="g2">
+      <div class="inp-group"><label>Categoría</label>
+        <select id="iCat"><option>Baby</option><option>Toddler Girl</option><option>Toddler Boy</option><option>Kid Girl</option><option>Kid Boy</option><option>Teen Girl</option><option>Teen Boy</option></select>
+      </div>
+      <div class="inp-group"><label>Género</label>
+        <select id="iGen"><option>Niña</option><option>Niño</option><option>Unisex</option></select>
+      </div>
+    </div>
+    <div class="inp-group"><label>Tipo de Prenda</label><input type="text" id="iTipo" placeholder="Ej: Vestido casual"/></div>
+    <div class="g2">
+      <div class="inp-group"><label>Marca</label><input type="text" id="iMarca" placeholder="Carter's, Disney..."/></div>
+      <div class="inp-group"><label>Talla</label><input type="text" id="iTalla" placeholder="3M, 2T, 5..."/></div>
+    </div>
+    <div class="g3">
+      <div class="inp-group"><label>Costo (Bs)</label><input type="number" id="iCosto" oninput="updateMargen()"/></div>
+      <div class="inp-group"><label>Precio Venta (Bs)</label><input type="number" id="iVenta" oninput="updateMargen()"/></div>
+      <div class="inp-group"><label>Stock</label><input type="number" id="iQty" value="1" min="0"/></div>
+    </div>
+    <div class="g2">
+      <div class="inp-group"><label>Condición</label>
+        <select id="iCond"><option>Excelente</option><option>Buena</option><option>Regular</option></select>
+      </div>
+      <div class="inp-group"><label>¿Tiene etiqueta?</label>
+        <select id="iEtiq"><option value="Si">Sí</option><option value="No">No</option></select>
+      </div>
+    </div>
+    <div id="margenBox" class="info-box info-gold hidden"></div>
+    <div class="flex">
+      <button class="btn btn-primary" onclick="guardarInv()">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeModal('modalInv')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CLIENTE ══ -->
+<div class="modal-overlay hidden" id="modalCliente">
+  <div class="modal-box">
+    <h3>Nuevo Cliente</h3>
+    <div class="inp-group"><label>Nombre</label><input type="text" id="cliNombre" placeholder="Nombre completo"/></div>
+    <div class="inp-group"><label>Teléfono (opcional)</label><input type="text" id="cliTel" placeholder="+591 7xxxxxxx"/></div>
+    <div class="inp-group"><label>Notas (opcional)</label><input type="text" id="cliNota" placeholder="Ej: prefiere tallas niña 2T"/></div>
+    <div class="flex">
+      <button class="btn btn-primary" onclick="guardarCliente()">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeModal('modalCliente')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const hoy=()=>new Date().toISOString().split('T')[0];
+const bs=n=>'Bs '+Number(n).toLocaleString('es');
+const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
+
+// ── INVENTARIO ────────────────────────────────────────────────────────────────
+const INV0=[
+  {id:"CAM-BB-01",cat:"Baby",gen:"Niña",tipo:"Onesie fashion",marca:"Carter's",talla:"9M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-02",cat:"Baby",gen:"Unisex",tipo:"Onesie básico",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-03",cat:"Baby",gen:"Unisex",tipo:"Pijama enteriza",marca:"Cloud Island",talla:"3M",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-04",cat:"Baby",gen:"Unisex",tipo:"Pijama enteriza",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-05",cat:"Baby",gen:"Unisex",tipo:"Set de pijamas",marca:"Cloud Island",talla:"6M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-06",cat:"Baby",gen:"Niña",tipo:"Set de pijamas",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-07",cat:"Baby",gen:"Niña",tipo:"Set pijama Top+Bottom",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-08",cat:"Baby",gen:"Niña",tipo:"Set de pijamas",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-09",cat:"Baby",gen:"Niña",tipo:"Set de pijamas",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-10",cat:"Baby",gen:"Niña",tipo:"Set pijama Top+Bottom",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-11",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"NB",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-12",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 3 pzas",marca:"Cat & Jack",talla:"NB",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-13",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-14",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-15",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 3 pzas",marca:"Carter's",talla:"6M",qty:1,costo:38,venta:140,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-16",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 3 pzas",marca:"Cat & Jack",talla:"9M",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-17",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"9M",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-18",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"No"},
+  {id:"CAM-BB-19",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-20",cat:"Baby",gen:"Niña",tipo:"Romper casual",marca:"Grayson mini",talla:"18M",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-21",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-22",cat:"Baby",gen:"Niña",tipo:"Vestido casual",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-23",cat:"Baby",gen:"Niña",tipo:"Vestido casual",marca:"Cloud Island",talla:"3M",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-24",cat:"Baby",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"6M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-25",cat:"Baby",gen:"Niña",tipo:"Falda suelta casual",marca:"OshKosh",talla:"12M",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-26",cat:"Baby",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"12M",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-27",cat:"Baby",gen:"Niña",tipo:"Vestido casual",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-28",cat:"Baby",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-29",cat:"Baby",gen:"Niña",tipo:"Romper casual",marca:"Target",talla:"18M",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-30",cat:"Baby",gen:"Niña",tipo:"Camiseta / Top",marca:"Grayson mini",talla:"12M",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-31",cat:"Baby",gen:"Niña",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:35,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-32",cat:"Baby",gen:"Niña",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:40,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-33",cat:"Baby",gen:"Niña",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:48,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-34",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"No"},
+  {id:"CAM-BB-35",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-36",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-37",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-38",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-39",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-40",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-41",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-42",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"6M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-43",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"6M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-44",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"9M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-45",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Disney",talla:"9M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-46",cat:"Baby",gen:"Niña",tipo:"Traje de baño",marca:"Cat & Jack",talla:"12M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-47",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-48",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"9M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-49",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Disney",talla:"6M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-50",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"6M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-51",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Disney",talla:"9M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-52",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Disney",talla:"9M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-53",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"9M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-54",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Disney",talla:"6M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-55",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"6M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-56",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"6M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-57",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-58",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-59",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-60",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Disney",talla:"3M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-61",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-62",cat:"Baby",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-63",cat:"Baby",gen:"Niño",tipo:"Abrigo / Puffer",marca:"Carter's",talla:"9M",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-64",cat:"Baby",gen:"Niño",tipo:"Set de bodies",marca:"Gerber",talla:"6M",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-65",cat:"Baby",gen:"Niño",tipo:"Set de bodies",marca:"Cloud Island",talla:"6M",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-66",cat:"Baby",gen:"Niño",tipo:"Set de pijamas",marca:"Cloud Island",talla:"NB",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-67",cat:"Baby",gen:"Niño",tipo:"Set de pijamas",marca:"Cloud Island",talla:"3M",qty:1,costo:38,venta:280,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-68",cat:"Baby",gen:"Unisex",tipo:"Set de pijamas",marca:"Cloud Island",talla:"6M",qty:1,costo:38,venta:150,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-69",cat:"Baby",gen:"Niño",tipo:"Set de pijamas",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-70",cat:"Baby",gen:"Niño",tipo:"Set de pijamas",marca:"Cloud Island",talla:"9M",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-71",cat:"Baby",gen:"Niño",tipo:"Set pijama Top+Bottom",marca:"Carter's",talla:"12M",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-72",cat:"Baby",gen:"Niño",tipo:"Set pijama Top+Bottom",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-73",cat:"Baby",gen:"Niño",tipo:"Set pijama Top+Bottom",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-74",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"NB",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-75",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"NB",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-76",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 3 pzas",marca:"Cat & Jack",talla:"3M",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-77",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"6M",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-78",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"12M",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-79",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Disney",talla:"12M",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-80",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Disney",talla:"12M",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-81",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-82",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-83",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 3 pzas",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-84",cat:"Baby",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Carter's",talla:"3M",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-85",cat:"Baby",gen:"Niño",tipo:"Abrigo / Puffer",marca:"Carter's",talla:"9M",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-86",cat:"Baby",gen:"Niño",tipo:"Abrigo / Puffer",marca:"Disney",talla:"12M",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-87",cat:"Baby",gen:"Niño",tipo:"Sweater / Hoodie",marca:"Cat & Jack",talla:"12M",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-88",cat:"Baby",gen:"Niño",tipo:"Impermeable",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-89",cat:"Baby",gen:"Niño",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"18M",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-90",cat:"Baby",gen:"Niño",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"12M",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-91",cat:"Baby",gen:"Niño",tipo:"Set de pijamas",marca:"Cloud Island",talla:"6M",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-BB-92",cat:"Baby",gen:"Niña",tipo:"Vestido casual",marca:"Carter's",talla:"18M",qty:1,costo:38,venta:65,cond:"Buena",etiq:"No"},
+  {id:"CAM-TG-01",cat:"Toddler Girl",gen:"Niña",tipo:"Traje de baño",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:45,cond:"Buena",etiq:"No"},
+  {id:"CAM-TG-02",cat:"Toddler Girl",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"3T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-03",cat:"Toddler Girl",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"4T",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"No"},
+  {id:"CAM-TG-04",cat:"Toddler Girl",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"4T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-05",cat:"Toddler Girl",gen:"Niña",tipo:"Camiseta / Top",marca:"Disney",talla:"3T",qty:1,costo:38,venta:40,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-06",cat:"Toddler Girl",gen:"Niña",tipo:"Camiseta / Top",marca:"Grayson mini",talla:"3T",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-07",cat:"Toddler Girl",gen:"Niña",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-08",cat:"Toddler Girl",gen:"Niña",tipo:"Pantalón / Legging",marca:"Hello Kitty",talla:"4T",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-09",cat:"Toddler Girl",gen:"Niña",tipo:"Chamarra ligera",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-10",cat:"Toddler Girl",gen:"Niña",tipo:"Romper casual",marca:"Barbie",talla:"2T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-11",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Barbie",talla:"2T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-12",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-13",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-14",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Bluey",talla:"3T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-15",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Bluey",talla:"4T",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-16",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Barbie",talla:"4T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-17",cat:"Toddler Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Ms Rachel",talla:"2T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-18",cat:"Toddler Girl",gen:"Niña",tipo:"Romper casual",marca:"Barbie",talla:"4T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-19",cat:"Toddler Girl",gen:"Niña",tipo:"Traje de baño",marca:"Ms Rachel",talla:"2T",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-20",cat:"Toddler Girl",gen:"Niña",tipo:"Falda de evento/tul",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-21",cat:"Toddler Girl",gen:"Niña",tipo:"Falda de evento/tul",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-22",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-23",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-24",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-25",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-26",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-27",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Disney",talla:"2T",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-28",cat:"Toddler Girl",gen:"Niña",tipo:"Falda suelta casual",marca:"OshKosh",talla:"3T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-29",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-30",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-31",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-32",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Disney",talla:"3T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-33",cat:"Toddler Girl",gen:"Niña",tipo:"Falda suelta casual",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-34",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-35",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-36",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:76,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-37",cat:"Toddler Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-38",cat:"Toddler Girl",gen:"Niña",tipo:"Sweater / Hoodie",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-39",cat:"Toddler Girl",gen:"Niña",tipo:"Set pijama Top+Bottom",marca:"Disney",talla:"2T",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-40",cat:"Toddler Girl",gen:"Niña",tipo:"Set de pijamas",marca:"Carter's",talla:"3T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-41",cat:"Toddler Girl",gen:"Niña",tipo:"Set de pijamas",marca:"Carter's",talla:"4T",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-42",cat:"Toddler Girl",gen:"Unisex",tipo:"Pijama enteriza",marca:"Carter's",talla:"4T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-43",cat:"Toddler Girl",gen:"Niña",tipo:"Traje de baño",marca:"Carter's",talla:"3T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TG-44",cat:"Toddler Girl",gen:"Niña",tipo:"Sweater / Hoodie",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"No"},
+  {id:"CAM-TB-01",cat:"Toddler Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-02",cat:"Toddler Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"OshKosh",talla:"3T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-03",cat:"Toddler Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"OshKosh",talla:"3T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-04",cat:"Toddler Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-05",cat:"Toddler Boy",gen:"Niño",tipo:"Short suelto",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:40,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-06",cat:"Toddler Boy",gen:"Unisex",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"No"},
+  {id:"CAM-TB-07",cat:"Toddler Boy",gen:"Niño",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-08",cat:"Toddler Boy",gen:"Niño",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:45,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-09",cat:"Toddler Boy",gen:"Niño",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-10",cat:"Toddler Boy",gen:"Niño",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"4T",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-11",cat:"Toddler Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-12",cat:"Toddler Boy",gen:"Niño",tipo:"Romper de evento",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-13",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-14",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-15",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-16",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"3T",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-17",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Bluey",talla:"3T",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-18",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Bluey",talla:"3T",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-19",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Disney",talla:"3T",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-20",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Disney",talla:"4T",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-21",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Disney",talla:"3T",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-22",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Ford",talla:"4T",qty:1,costo:38,venta:105,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-23",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Ford",talla:"3T",qty:1,costo:38,venta:105,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-24",cat:"Toddler Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Grayson mini",talla:"4T",qty:1,costo:38,venta:40,cond:"Regular",etiq:"Si"},
+  {id:"CAM-TB-25",cat:"Toddler Boy",gen:"Niño",tipo:"Set pijama Top+Bottom",marca:"Disney",talla:"2T",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-26",cat:"Toddler Boy",gen:"Niño",tipo:"Set pijama Top+Bottom",marca:"Cat & Jack",talla:"2T",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-27",cat:"Toddler Boy",gen:"Niño",tipo:"Set de pijamas",marca:"Carter's",talla:"2T",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-28",cat:"Toddler Boy",gen:"Niño",tipo:"Pijama enteriza",marca:"Cloud Island",talla:"3T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-29",cat:"Toddler Boy",gen:"Niño",tipo:"Sweater / Hoodie",marca:"Cloud Island",talla:"4T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-30",cat:"Toddler Boy",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"2T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-31",cat:"Toddler Boy",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"2T",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-32",cat:"Toddler Boy",gen:"Niño",tipo:"Traje de baño",marca:"Carter's",talla:"5",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-TB-33",cat:"Toddler Boy",gen:"Niño",tipo:"Sweater / Hoodie",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:45,cond:"Buena",etiq:"Si"},
+  {id:"CAM-KG-01",cat:"Kid Girl",gen:"Niña",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"12",qty:1,costo:38,venta:40,cond:"Buena",etiq:"Si"},
+  {id:"CAM-KG-02",cat:"Kid Girl",gen:"Niña",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-03",cat:"Kid Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-04",cat:"Kid Girl",gen:"Niña",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:95,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-05",cat:"Kid Girl",gen:"Niña",tipo:"Vestido casual",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-06",cat:"Kid Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:115,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-07",cat:"Kid Girl",gen:"Niña",tipo:"Vestido de evento",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:115,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-08",cat:"Kid Girl",gen:"Niña",tipo:"Sweater / Hoodie",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:70,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-09",cat:"Kid Girl",gen:"Niña",tipo:"Abrigo / Puffer",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-10",cat:"Kid Girl",gen:"Niña",tipo:"Set pijama Top+Bottom",marca:"Cloud Island",talla:"5",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-11",cat:"Kid Girl",gen:"Niña",tipo:"Set de pijamas",marca:"Carter's",talla:"5",qty:1,costo:38,venta:115,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-12",cat:"Kid Girl",gen:"Niña",tipo:"Set de pijamas",marca:"Carter's",talla:"5",qty:1,costo:38,venta:125,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-13",cat:"Kid Girl",gen:"Niña",tipo:"Traje de baño",marca:"Ms Rachel",talla:"5",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KG-14",cat:"Kid Girl",gen:"Niña",tipo:"Traje de baño",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:60,cond:"Excelente",etiq:"No"},
+  {id:"CAM-KG-15",cat:"Kid Girl",gen:"Niña",tipo:"Camiseta / Top",marca:"Target",talla:"S",qty:1,costo:38,venta:40,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-01",cat:"Kid Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-02",cat:"Kid Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-03",cat:"Kid Boy",gen:"Niño",tipo:"Short suelto",marca:"Grayson mini",talla:"5",qty:1,costo:38,venta:40,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-04",cat:"Kid Boy",gen:"Niño",tipo:"Short suelto",marca:"Cat & Jack",talla:"8",qty:1,costo:38,venta:55,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-05",cat:"Kid Boy",gen:"Niño",tipo:"Conjunto casual 2 pzas",marca:"Cat & Jack",talla:"5",qty:1,costo:38,venta:90,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-06",cat:"Kid Boy",gen:"Niño",tipo:"Set de pijamas",marca:"Ms Rachel",talla:"5",qty:1,costo:38,venta:100,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-KB-07",cat:"Kid Boy",gen:"Niño",tipo:"Sweater / Hoodie",marca:"Cat & Jack",talla:"8",qty:1,costo:38,venta:80,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-YG-01",cat:"Teen Girl",gen:"Niña",tipo:"Camiseta / Top",marca:"All in Motion",talla:"XL",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-YB-01",cat:"Teen Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Target",talla:"L",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-YB-02",cat:"Teen Boy",gen:"Niño",tipo:"Camiseta / Top",marca:"Target",talla:"L",qty:1,costo:38,venta:50,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-YB-03",cat:"Teen Boy",gen:"Niño",tipo:"Pantalón / Legging",marca:"Cat & Jack",talla:"18H",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-YB-04",cat:"Teen Boy",gen:"Unisex",tipo:"Pijama enteriza",marca:"Cat & Jack",talla:"XL",qty:1,costo:38,venta:120,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-ACC-01",cat:"Baby",gen:"Niño",tipo:"Zapatitos bebé",marca:"Carter's",talla:"3-S",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-ACC-02",cat:"Baby",gen:"Niño",tipo:"Zapatitos bebé",marca:"Carter's",talla:"4-S",qty:1,costo:38,venta:85,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-ACC-03",cat:"Toddler Boy",gen:"Niño",tipo:"Pack calzones",marca:"Paw Patrol",talla:"2T",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-ACC-04",cat:"Toddler Boy",gen:"Niño",tipo:"Pack calzones",marca:"Hanes",talla:"4T",qty:1,costo:38,venta:110,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-ACC-05",cat:"Kid Girl",gen:"Niña",tipo:"Pack calzones",marca:"Hanes",talla:"8",qty:1,costo:38,venta:75,cond:"Excelente",etiq:"Si"},
+  {id:"CAM-ACC-06",cat:"Toddler Girl",gen:"Niña",tipo:"Mochila preescolar",marca:"Cat & Jack",talla:"—",qty:1,costo:38,venta:65,cond:"Excelente",etiq:"No"},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let inv      = load('cam4_inv', INV0);
+let ven      = load('cam4_ven', []);
+let caja     = load('cam4_caja', []);
+let clientes = load('cam4_cli', []);
+let stockMin = load('cam4_smin', 1);
+let iN=load('cam4_iN',160), vN=load('cam4_vN',0), cN=load('cam4_cN',0), cliN=load('cam4_cliN',0);
+let currentTab='dashboard';
+let charts={};
+let selectedItemId=null;
+
+// ── COMPUTED ──────────────────────────────────────────────────────────────────
+const stats=()=>{
+  const total=inv.reduce((s,i)=>s+i.qty,0);
+  const inversion=inv.reduce((s,i)=>s+i.costo*i.qty,0);
+  const potencial=inv.reduce((s,i)=>s+i.venta*i.qty,0);
+  const totalVen=ven.reduce((s,v)=>s+v.precio*v.qty,0);
+  const costoVen=ven.reduce((s,v)=>s+v.costo*v.qty,0);
+  const capital=caja.filter(c=>c.tipo==='capital').reduce((s,c)=>s+c.monto,0);
+  const ingresos=caja.filter(c=>c.tipo==='ingreso'||c.tipo==='capital').reduce((s,c)=>s+c.monto,0);
+  const egresos=caja.filter(c=>c.tipo==='egreso').reduce((s,c)=>s+c.monto,0);
+  return{total,inversion,potencial,totalVen,costoVen,ganancia:totalVen-costoVen,
+    capital,ingresos,egresos,saldo:ingresos-egresos,stockBajo:inv.filter(i=>i.qty<=stockMin&&i.qty>0)};
+};
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+const TABS=[
+  {id:'dashboard',l:'Dashboard'},{id:'inventario',l:'Inventario'},
+  {id:'ventas',l:'Ventas'},{id:'caja',l:'Caja'},
+  {id:'clientes',l:'Clientes'},{id:'reportes',l:'Reportes'},{id:'alertas',l:'Alertas'},
+];
+function renderTabs(){
+  const st=stats();
+  document.getElementById('tabs').innerHTML=TABS.map(t=>{
+    const lbl=t.id==='alertas'&&st.stockBajo.length>0?`Alertas (${st.stockBajo.length})`:t.l;
+    return`<button class="tab-btn${currentTab===t.id?' active':''}" onclick="goTab('${t.id}')">${lbl}</button>`;
+  }).join('');
+}
+function goTab(id){currentTab=id;renderTabs();renderApp();}
+
+// ── BADGE HELPERS ─────────────────────────────────────────────────────────────
+const genB=g=>g==='Niña'?`<span class="badge badge-f">♀ Niña</span>`:
+             g==='Niño'?`<span class="badge badge-m">♂ Niño</span>`:
+             `<span class="badge badge-u">⚥ Unisex</span>`;
+const condB=c=>c==='Excelente'?`<span class="badge badge-exc">Excelente</span>`:
+              c==='Buena'?`<span class="badge badge-bue">Buena</span>`:
+              `<span class="badge badge-reg">Regular</span>`;
+const statC=(ic,lbl,val)=>`<div class="stat"><div class="stat-icon">${ic}</div><div class="stat-label">${lbl}</div><div class="stat-val">${val}</div></div>`;
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderApp(){
+  Object.values(charts).forEach(c=>c.destroy()); charts={};
+  const st=stats();
+  const app=document.getElementById('app');
+
+  // ── DASHBOARD ──
+  if(currentTab==='dashboard'){
+    const alertH=st.stockBajo.length>0?`<div class="card" style="border-color:rgba(212,165,165,.35);">
+      <h3>Stock bajo — ≤${stockMin} unidades</h3>
+      ${st.stockBajo.map(i=>`<div class="alerta-row">
+        <div><strong style="font-size:1.6rem">${i.tipo}</strong>
+          <span style="color:var(--text-muted);font-size:1.5rem;margin-left:.8rem">${i.marca} · ${i.talla}</span></div>
+        <span class="badge badge-qty-low">Solo ${i.qty}</span>
+      </div>`).join('')}
+    </div>`:'';
+    const ultV=ven.slice(0,5).map(v=>`<div class="row">
+      <div><div style="font-weight:600;font-size:1.6rem">${v.tipo} <span class="badge badge-talla">${v.talla}</span></div>
+        <div style="font-size:1.5rem;color:var(--text-muted);margin-top:.3rem">${v.marca} · ${v.cliente} · ${v.fecha}</div></div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:var(--gold-light);font-size:1.6rem">${bs(v.precio*v.qty)}</div>
+        <div style="font-size:1.5rem;color:var(--text-muted)">Gan: ${bs((v.precio-v.costo)*v.qty)}</div>
+      </div>
+    </div>`).join('')||`<div class="empty">Las primeras ventas aparecerán aquí</div>`;
+
+    app.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.4rem;flex-wrap:wrap;gap:1.2rem">
+        <div><div class="page-title">Bienvenida</div><div class="page-sub">Santa Cruz de la Sierra · Bolivia</div></div>
+        <button class="btn btn-primary" onclick="openModal('modalVenta')">+ Nueva venta</button>
+      </div>
+      <div class="stat-grid">
+        ${statC('✦','Prendas en stock',st.total)}
+        ${statC('◈','Valor potencial',bs(st.potencial))}
+        ${statC('◇','Ventas totales',bs(st.totalVen))}
+        ${statC('◆','Ganancia',bs(st.ganancia))}
+      </div>
+      <div class="two-charts">
+        <div class="card" style="margin:0"><h3>Tendencia de ventas</h3><canvas id="cLine"></canvas></div>
+        <div class="card" style="margin:0"><h3>Stock por categoría</h3><canvas id="cCat"></canvas></div>
+      </div>
+      ${alertH}
+      <div class="card"><h3>Últimas ventas</h3>${ultV}</div>`;
+    drawLine('cLine'); drawCat('cCat');
+
+  // ── INVENTARIO ──
+  }else if(currentTab==='inventario'){
+    const cats=[...new Set(inv.map(i=>i.cat))];
+    const tallas=[...new Set(inv.map(i=>i.talla))].sort();
+    app.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div><div class="page-title">Inventario</div><div class="page-sub">${inv.length} artículos · ${inv.reduce((s,i)=>s+i.qty,0)} en stock</div></div>
+        <button class="btn btn-primary" onclick="newInv()">+ Agregar prenda</button>
+      </div>
+      <input class="search-bar" id="sInv" placeholder="Buscar por código, tipo, marca, talla..." oninput="filterInv()"/>
+      <div class="filter-row">
+        <select class="filter-sel" id="fCat" onchange="filterInv()">
+          <option value="">Todas las categorías</option>
+          ${cats.map(c=>`<option>${c}</option>`).join('')}
+        </select>
+        <select class="filter-sel" id="fTalla" onchange="filterInv()">
+          <option value="">Todas las tallas</option>
+          ${tallas.map(t=>`<option>${t}</option>`).join('')}
+        </select>
+        <select class="filter-sel" id="fGen" onchange="filterInv()">
+          <option value="">Todos los géneros</option>
+          <option>Niña</option><option>Niño</option><option>Unisex</option>
+        </select>
+        <select class="filter-sel" id="fCond" onchange="filterInv()">
+          <option value="">Toda condición</option>
+          <option>Excelente</option><option>Buena</option><option>Regular</option>
+        </select>
+        <select class="filter-sel" id="fStk" onchange="filterInv()">
+          <option value="">Todo stock</option>
+          <option value="1">En stock</option>
+          <option value="0">Vendido</option>
+        </select>
+      </div>
+      <div class="count-label" id="invCnt"></div>
+      <div id="invList"></div>`;
+    filterInv();
+
+  // ── VENTAS ──
+  }else if(currentTab==='ventas'){
+    app.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div><div class="page-title">Ventas</div><div class="page-sub">Historial completo</div></div>
+        <button class="btn btn-primary" onclick="openModal('modalVenta')">+ Registrar venta</button>
+      </div>
+      <div class="stat-grid" style="margin-bottom:2rem">
+        ${statC('◈','Transacciones',ven.length)}
+        ${statC('◇','Total cobrado',bs(st.totalVen))}
+        ${statC('◆','Ganancia neta',bs(st.ganancia))}
+      </div>
+      ${ven.length===0?`<div class="card"><div class="empty">Aún no hay ventas registradas</div></div>`:
+        ven.map(v=>`<div class="row">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:1.6rem">${v.tipo} <span class="badge badge-talla">${v.talla}</span></div>
+            <div style="font-size:1.5rem;color:var(--text-muted);margin-top:.3rem">${v.marca} · ${v.cliente} · ${v.fecha} · <span style="font-family:monospace;font-size:1.5rem">${v.id}</span></div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-weight:700;color:var(--gold-light);font-size:1.6rem">${bs(v.precio*v.qty)}</div>
+            <div style="font-size:1.5rem;color:var(--text-muted)">x${v.qty} · gan: ${bs((v.precio-v.costo)*v.qty)}</div>
+          </div>
+        </div>`).join('')}`;
+
+  // ── CAJA ──
+  }else if(currentTab==='caja'){
+    app.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div><div class="page-title">Control de Caja</div><div class="page-sub">Ingresos, egresos y capital</div></div>
+        <button class="btn btn-primary" onclick="openModal('modalCaja')">+ Movimiento</button>
+      </div>
+      <div class="stat-grid" style="margin-bottom:2rem">
+        ${statC('★','Capital registrado',bs(st.capital))}
+        ${statC('↑','Ingresos',bs(st.ingresos))}
+        ${statC('↓','Egresos',bs(st.egresos))}
+        ${statC('◆','Saldo actual',bs(st.saldo))}
+      </div>
+      ${caja.length===0?`<div class="card"><div class="empty">Sin movimientos registrados</div></div>`:
+        caja.map(c=>{
+          const esCapital=c.tipo==='capital';
+          const esIngreso=c.tipo==='ingreso';
+          const bg=esCapital?'rgba(201,169,110,.12)':esIngreso?'rgba(156,175,136,.12)':'rgba(212,165,165,.1)';
+          const col=esCapital?'var(--gold)':esIngreso?'#b0c8a0':'#e8a0a0';
+          const brd=esCapital?'rgba(201,169,110,.3)':esIngreso?'rgba(156,175,136,.25)':'rgba(212,165,165,.25)';
+          const pfx=esCapital?'★':esIngreso?'+':'-';
+          return`<div class="row">
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600;font-size:1.6rem">${c.concepto}${esCapital?' <span class="badge badge-bue" style="margin-left:.5rem">Capital</span>':''}</div>
+              <div style="font-size:1.5rem;color:var(--text-muted);margin-top:.3rem">${c.fecha} · ${c.categoria}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;flex-shrink:0">
+              <span class="badge" style="background:${bg};color:${col};border:1px solid ${brd}">${pfx}${bs(c.monto)}</span>
+              <button class="btn btn-danger btn-sm" onclick="delCaja('${c.id}')">×</button>
+            </div>
+          </div>`;
+        }).join('')}`;
+
+  // ── CLIENTES ──
+  }else if(currentTab==='clientes'){
+    // construir stats por cliente
+    const cliStats={};
+    ven.forEach(v=>{
+      const n=v.cliente;
+      if(!cliStats[n])cliStats[n]={compras:0,total:0};
+      cliStats[n].compras+=v.qty;
+      cliStats[n].total+=v.precio*v.qty;
+    });
+    // merge con tabla de clientes
+    const allNames=[...new Set([...clientes.map(c=>c.nombre),...Object.keys(cliStats)])];
+
+    app.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div><div class="page-title">Clientes</div><div class="page-sub">${allNames.length} clientes registrados</div></div>
+        <button class="btn btn-primary" onclick="openModal('modalCliente')">+ Nuevo cliente</button>
+      </div>
+      ${allNames.length===0?`<div class="card"><div class="empty">Los clientes aparecen aquí al registrar ventas</div></div>`:
+        allNames.sort().map(nombre=>{
+          const cli=clientes.find(c=>c.nombre===nombre);
+          const st2=cliStats[nombre]||{compras:0,total:0};
+          const initials=nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+          return`<div class="client-row">
+            <div class="flex" style="flex:1;min-width:0">
+              <div class="client-avatar">${initials}</div>
+              <div>
+                <div style="font-weight:700;font-size:1.7rem">${nombre}</div>
+                <div style="font-size:1.5rem;color:var(--text-muted);margin-top:.2rem">
+                  ${cli?.tel?`📞 ${cli.tel} · `:''}${cli?.nota?`${cli.nota}`:''}
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1.6rem;align-items:center;flex-shrink:0;flex-wrap:wrap">
+              <div style="text-align:right">
+                <div style="font-size:1.5rem;color:var(--text-muted)">Compras</div>
+                <div style="font-size:1.7rem;font-weight:700;color:var(--gold-light)">${st2.compras} pzas</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:1.5rem;color:var(--text-muted)">Total gastado</div>
+                <div style="font-size:1.7rem;font-weight:700;color:var(--gold)">${bs(st2.total)}</div>
+              </div>
+              ${cli?`<button class="btn btn-danger btn-sm" onclick="delCliente('${cli.id}')">×</button>`:''}
+            </div>
+          </div>`;
+        }).join('')}`;
+
+  // ── REPORTES ──
+  }else if(currentTab==='reportes'){
+    const topT=Object.entries(ven.reduce((a,v)=>{a[v.tipo]=(a[v.tipo]||0)+v.qty;return a;},{})).sort(([,a],[,b])=>b-a).slice(0,5);
+    const topM=Object.entries(inv.reduce((a,i)=>{a[i.marca]=(a[i.marca]||0)+i.qty;return a;},{})).sort(([,a],[,b])=>b-a).slice(0,5);
+    app.innerHTML=`
+      <div class="page-title" style="margin-bottom:.4rem">Reportes</div>
+      <div class="page-sub" style="margin-bottom:2.4rem">Análisis y finanzas</div>
+      <div class="two-charts">
+        <div class="card" style="margin:0"><h3>Ventas por día (Bs)</h3><canvas id="cBar"></canvas></div>
+        <div class="card" style="margin:0"><h3>Distribución por género</h3><canvas id="cGen"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Resumen financiero</h3>
+        <div class="fin-grid">
+          ${[{l:'Capital registrado',v:bs(st.capital)},{l:'Inversión en stock',v:bs(st.inversion)},
+             {l:'Valor potencial',v:bs(st.potencial)},{l:'Total facturado',v:bs(st.totalVen)},
+             {l:'Costo de ventas',v:bs(st.costoVen)},{l:'Ganancia neta',v:bs(st.ganancia)}]
+            .map(f=>`<div style="background:var(--bg);border-radius:1rem;padding:1.4rem 1.6rem;border:1px solid var(--border)">
+              <div style="font-size:1.5rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-bottom:.6rem">${f.l}</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold-light)">${f.v}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="two-cols">
+        <div class="card" style="margin:0"><h3>Top tipos vendidos</h3>
+          ${topT.length===0?`<div class="empty">Sin datos</div>`:
+            topT.map(([t,q],i)=>`<div class="fin-row">
+              <div style="display:flex;gap:1rem;align-items:center">
+                <div class="top-rank">${i+1}</div><span style="font-size:1.6rem">${t}</span>
+              </div><span class="badge badge-qty">${q} uds</span>
+            </div>`).join('')}
+        </div>
+        <div class="card" style="margin:0"><h3>Marcas con más stock</h3>
+          ${topM.map(([m,q],i)=>`<div class="fin-row">
+            <div style="display:flex;gap:1rem;align-items:center">
+              <div class="top-rank">${i+1}</div><span style="font-size:1.6rem">${m}</span>
+            </div><span class="badge badge-qty">${q} uds</span>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    drawBar('cBar'); drawGen('cGen');
+
+  // ── ALERTAS ──
+  }else if(currentTab==='alertas'){
+    app.innerHTML=`
+      <div class="page-title" style="margin-bottom:.4rem">Alertas de Stock</div>
+      <div class="page-sub" style="margin-bottom:2.4rem">Prendas con poco stock disponible</div>
+      <div class="card">
+        <div class="flex" style="margin-bottom:1.6rem">
+          <span style="font-size:1.6rem;color:var(--text-muted)">Alertar cuando queden ≤</span>
+          <input type="number" id="sMinInp" value="${stockMin}" min="0" max="20" onchange="setStockMin(this.value)"
+            style="width:5rem;padding:.8rem 1rem;border-radius:.8rem;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1.8rem;text-align:center;font-family:'Raleway',sans-serif"/>
+          <span style="font-size:1.6rem;color:var(--text-muted)">unidades</span>
+        </div>
+        ${st.stockBajo.length===0
+          ?`<div class="empty" style="color:var(--sage)">✓ Todo el stock está en buen nivel</div>`
+          :st.stockBajo.map(i=>`<div class="alerta-row">
+            <div>
+              <div style="font-weight:600;font-size:1.6rem">${i.tipo} <span style="color:var(--text-muted);font-size:1.5rem">${i.marca}</span></div>
+              <div style="font-size:1.5rem;color:var(--text-muted);margin-top:.3rem">
+                ${i.id} · ${i.cat} · ${genB(i.gen)} · Talla ${i.talla} · ${bs(i.venta)}
+              </div>
+            </div>
+            <span class="badge badge-qty-low">Solo ${i.qty}</span>
+          </div>`).join('')}
+      </div>`;
+  }
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────────
+Chart.defaults.font.family="'Raleway',sans-serif";
+Chart.defaults.color='#7a8aaa';
+const tendData=()=>{
+  const m={};ven.forEach(v=>{m[v.fecha]=(m[v.fecha]||0)+v.precio*v.qty;});
+  const s=Object.entries(m).sort(([a],[b])=>a.localeCompare(b));
+  return{labels:s.map(([f])=>f.slice(5)),data:s.map(([,t])=>t)};
+};
+const noData=id=>{const el=document.getElementById(id);if(el)el.insertAdjacentHTML('afterend','<div class="empty" style="padding:1.6rem">Sin ventas aún</div>');};
+function drawLine(id){const el=document.getElementById(id);if(!el)return;const{labels,data}=tendData();if(!labels.length){noData(id);return;}
+  charts[id]=new Chart(el,{type:'line',data:{labels,datasets:[{label:'Bs',data,borderColor:'#C9A96E',backgroundColor:'rgba(201,169,110,.06)',borderWidth:2,tension:.4,fill:true,pointBackgroundColor:'#C9A96E',pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'}},y:{grid:{color:'rgba(255,255,255,.04)'}}}}});}
+function drawBar(id){const el=document.getElementById(id);if(!el)return;const{labels,data}=tendData();if(!labels.length){noData(id);return;}
+  charts[id]=new Chart(el,{type:'bar',data:{labels,datasets:[{label:'Bs',data,backgroundColor:'rgba(201,169,110,.4)',borderColor:'#C9A96E',borderWidth:1,borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'}},y:{grid:{color:'rgba(255,255,255,.04)'}}}}});}
+function drawCat(id){const el=document.getElementById(id);if(!el)return;
+  const m={};inv.forEach(i=>{m[i.cat]=(m[i.cat]||0)+i.qty;});const e=Object.entries(m).sort(([,a],[,b])=>b-a);
+  charts[id]=new Chart(el,{type:'doughnut',data:{labels:e.map(([c])=>c),datasets:[{data:e.map(([,v])=>v),backgroundColor:['#C9A96E','#9CAF88','#D4A5A5','#4a6080','#E8D5A3','#A87C2A','#6a8aaa'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8,font:{size:10}}}},cutout:'58%'}});}
+function drawGen(id){const el=document.getElementById(id);if(!el)return;
+  const m={Niña:0,Niño:0,Unisex:0};inv.forEach(i=>{if(m[i.gen]!==undefined)m[i.gen]+=i.qty;});
+  charts[id]=new Chart(el,{type:'doughnut',data:{labels:['Niña','Niño','Unisex'],datasets:[{data:[m.Niña,m.Niño,m.Unisex],backgroundColor:['#D4A5A5','#4a6080','#9CAF88'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8,font:{size:10}}}},cutout:'55%'}});}
+
+// ── INVENTARIO CRUD ───────────────────────────────────────────────────────────
+function filterInv(){
+  const q=(document.getElementById('sInv')?.value||'').toLowerCase();
+  const fC=document.getElementById('fCat')?.value||'';
+  const fT=document.getElementById('fTalla')?.value||'';
+  const fG=document.getElementById('fGen')?.value||'';
+  const fCo=document.getElementById('fCond')?.value||'';
+  const fSt=document.getElementById('fStk')?.value||'';
+  const f=inv.filter(i=>{
+    const ms=i.id.toLowerCase().includes(q)||i.tipo.toLowerCase().includes(q)||
+              i.marca.toLowerCase().includes(q)||i.talla.toLowerCase().includes(q);
+    const sk=fSt===''?true:fSt==='1'?i.qty>0:i.qty===0;
+    return ms&&(!fC||i.cat===fC)&&(!fT||i.talla===fT)&&(!fG||i.gen===fG)&&(!fCo||i.cond===fCo)&&sk;
+  });
+  const cnt=document.getElementById('invCnt');
+  if(cnt)cnt.textContent=`${f.length} prenda${f.length!==1?'s':''} encontrada${f.length!==1?'s':''}`;
+  const list=document.getElementById('invList');if(!list)return;
+  list.innerHTML=f.map(i=>`<div class="row" style="${i.qty===0?'opacity:.4;':''}${i.qty<=stockMin&&i.qty>0?'border-color:rgba(212,165,165,.35);':''}">
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:600;font-size:1.6rem">${i.tipo}
+        <span style="font-size:1.5rem;font-family:monospace;color:var(--text-dim);margin-left:.4rem">${i.id}</span>
+        ${i.qty===0?'<span class="badge badge-qty-low" style="margin-left:.4rem">Vendido</span>':''}
+      </div>
+      <div style="font-size:1.5rem;color:var(--text-muted);margin-top:.3rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center">
+        ${i.marca} · ${genB(i.gen)} ${condB(i.cond)}
+        <span class="${i.etiq==='Si'?'tag-etiq':'tag-no-etiq'}">${i.etiq==='Si'?'✓ etiq':'sin etiq'}</span>
+      </div>
+    </div>
+    <div class="flex" style="flex-shrink:0">
+      <span class="badge badge-talla">${i.talla}</span>
+      <span class="badge badge-price">${bs(i.venta)}</span>
+      <span class="badge ${i.qty<=stockMin&&i.qty>0?'badge-qty-low':'badge-qty'}">${i.qty===0?'—':'×'+i.qty}</span>
+      <button class="btn btn-ghost btn-sm" onclick="editInv('${i.id}')">✎</button>
+      <button class="btn btn-danger btn-sm" onclick="delInv('${i.id}')">×</button>
+    </div>
+  </div>`).join('')||`<div class="empty">No se encontraron prendas</div>`;
+}
+
+function newInv(){
+  document.getElementById('mInvTitle').textContent='Nueva Prenda';
+  document.getElementById('iEditId').value='';
+  document.getElementById('iTipo').value='';document.getElementById('iMarca').value='';
+  document.getElementById('iTalla').value='';document.getElementById('iCosto').value='38';
+  document.getElementById('iVenta').value='';document.getElementById('iQty').value='1';
+  document.getElementById('iCat').value='Baby';document.getElementById('iGen').value='Niña';
+  document.getElementById('iCond').value='Excelente';document.getElementById('iEtiq').value='Si';
+  document.getElementById('margenBox').classList.add('hidden');
+  openModal('modalInv');
+}
+function editInv(id){
+  const i=inv.find(x=>x.id===id);if(!i)return;
+  document.getElementById('mInvTitle').textContent='Editar Prenda';
+  document.getElementById('iEditId').value=id;
+  document.getElementById('iCat').value=i.cat;document.getElementById('iGen').value=i.gen;
+  document.getElementById('iTipo').value=i.tipo;document.getElementById('iMarca').value=i.marca;
+  document.getElementById('iTalla').value=i.talla;document.getElementById('iCosto').value=i.costo;
+  document.getElementById('iVenta').value=i.venta;document.getElementById('iQty').value=i.qty;
+  document.getElementById('iCond').value=i.cond;document.getElementById('iEtiq').value=i.etiq;
+  updateMargen();openModal('modalInv');
+}
+function guardarInv(){
+  const tipo=document.getElementById('iTipo').value.trim();
+  const costo=Number(document.getElementById('iCosto').value);
+  const venta=Number(document.getElementById('iVenta').value);
+  const qty=Number(document.getElementById('iQty').value);
+  if(!tipo||!costo||!venta)return alert('Completá tipo, costo y precio de venta.');
+  const eid=document.getElementById('iEditId').value;
+  const d={cat:document.getElementById('iCat').value,gen:document.getElementById('iGen').value,
+    tipo,marca:document.getElementById('iMarca').value,talla:document.getElementById('iTalla').value,
+    costo,venta,qty,cond:document.getElementById('iCond').value,etiq:document.getElementById('iEtiq').value};
+  if(eid){inv=inv.map(i=>i.id===eid?{...i,...d}:i);}
+  else{iN++;inv.push({id:`CAM-NEW-${String(iN).padStart(3,'0')}`,...d});save('cam4_iN',iN);}
+  save('cam4_inv',inv);closeModal('modalInv');renderApp();renderTabs();
+}
+function delInv(id){
+  if(!confirm('¿Eliminar esta prenda?'))return;
+  inv=inv.filter(i=>i.id!==id);save('cam4_inv',inv);renderApp();renderTabs();
+}
+function updateMargen(){
+  const c=Number(document.getElementById('iCosto')?.value);
+  const v=Number(document.getElementById('iVenta')?.value);
+  const b=document.getElementById('margenBox');
+  if(c&&v&&b){b.classList.remove('hidden');b.innerHTML=`Ganancia: <strong style="color:var(--gold)">${bs(v-c)}</strong> · Margen: <strong style="color:var(--gold)">${c>0?Math.round(((v-c)/c)*100):0}%</strong>`;}
+  else if(b)b.classList.add('hidden');
+}
+
+// ── VENTA: BÚSQUEDA EN TIEMPO REAL ───────────────────────────────────────────
+function searchItems(){
+  const q=(document.getElementById('vSearch')?.value||'').toLowerCase().trim();
+  const res=document.getElementById('vResults');
+  if(!q){res.classList.add('hidden');res.innerHTML='';return;}
+  const hits=inv.filter(i=>i.qty>0&&(
+    i.id.toLowerCase().includes(q)||i.tipo.toLowerCase().includes(q)||
+    i.marca.toLowerCase().includes(q)||i.talla.toLowerCase().includes(q)));
+  if(!hits.length){res.classList.remove('hidden');res.innerHTML=`<div class="v-result-item" style="color:var(--text-muted)">Sin resultados</div>`;return;}
+  res.classList.remove('hidden');
+  res.innerHTML=hits.slice(0,8).map(i=>`<div class="v-result-item" onclick="selectItem('${i.id}')">
+    <strong>${i.id}</strong> · ${i.tipo} · ${i.marca} · <span class="badge badge-talla" style="font-size:1.4rem">${i.talla}</span>
+    · <span style="color:var(--gold)">${bs(i.venta)}</span> · ${i.qty} disp.
+  </div>`).join('');
+}
+function selectItem(id){
+  selectedItemId=id;
+  const item=inv.find(i=>i.id===id);if(!item)return;
+  document.getElementById('vItemId').value=id;
+  document.getElementById('vSearch').value=`${item.id} — ${item.tipo} (${item.talla}) ${item.marca}`;
+  document.getElementById('vResults').classList.add('hidden');
+  document.getElementById('vPrecio').value=item.venta;
+  document.getElementById('vQty').value=1;
+  updateVInfo();
+}
+function updateVInfo(){
+  const id=document.getElementById('vItemId').value;
+  const item=inv.find(i=>i.id===id);
+  const qty=Number(document.getElementById('vQty').value)||1;
+  const precio=Number(document.getElementById('vPrecio').value)||0;
+  const info=document.getElementById('vItemInfo');const tot=document.getElementById('vTotal');
+  if(item){
+    info.classList.remove('hidden');
+    info.innerHTML=`<strong>${item.tipo}</strong> · ${item.marca} · Talla ${item.talla}<br>
+      Precio sugerido: <strong style="color:var(--gold)">${bs(item.venta)}</strong> · Costo: ${bs(item.costo)} · Stock: ${item.qty}`;
+    tot.classList.remove('hidden');
+    const ganancia=(precio-item.costo)*qty;
+    tot.innerHTML=`Total a cobrar: <strong style="font-size:1.9rem;color:var(--gold-light)">${bs(precio*qty)}</strong>
+      &nbsp;·&nbsp; Ganancia: <strong style="color:${ganancia>=0?'#b0c8a0':'#e8a0a0'}">${bs(ganancia)}</strong>`;
+  }else{info.classList.add('hidden');tot.classList.add('hidden');}
+}
+
+// ── CLIENTES HELPERS ──────────────────────────────────────────────────────────
+function buildClientDatalist(){
+  const dl=document.getElementById('clientList');if(!dl)return;
+  const names=[...new Set([...clientes.map(c=>c.nombre),...ven.map(v=>v.cliente).filter(v=>v!=='Sin nombre')])];
+  dl.innerHTML=names.map(n=>`<option value="${n}">`).join('');
+}
+
+// ── REGISTER VENTA ────────────────────────────────────────────────────────────
+function openModal(id){
+  if(id==='modalVenta'){
+    selectedItemId=null;
+    document.getElementById('vSearch').value='';
+    document.getElementById('vItemId').value='';
+    document.getElementById('vResults').classList.add('hidden');
+    document.getElementById('vResults').innerHTML='';
+    document.getElementById('vItemInfo').classList.add('hidden');
+    document.getElementById('vTotal').classList.add('hidden');
+    document.getElementById('vPrecio').value='';
+    document.getElementById('vQty').value=1;
+    document.getElementById('vCliente').value='';
+    document.getElementById('vFecha').value=hoy();
+    buildClientDatalist();
+  }
+  if(id==='modalCaja'){
+    document.getElementById('cFecha').value=hoy();
+    document.getElementById('cConcepto').value='';
+    document.getElementById('cMonto').value='';
+    document.getElementById('cTipo').value='ingreso';
+    document.getElementById('cCat').value='Ventas';
+  }
+  if(id==='modalCliente'){
+    document.getElementById('cliNombre').value='';
+    document.getElementById('cliTel').value='';
+    document.getElementById('cliNota').value='';
+  }
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function regVenta(){
+  const id=document.getElementById('vItemId').value;
+  const item=inv.find(i=>i.id===id);
+  const qty=Number(document.getElementById('vQty').value);
+  const precio=Number(document.getElementById('vPrecio').value);
+  const clienteInput=document.getElementById('vCliente').value.trim()||'Sin nombre';
+  if(!item)return alert('Buscá y seleccioná una prenda primero.');
+  if(qty<1||qty>item.qty)return alert(`Cantidad inválida. Disponibles: ${item.qty}`);
+  if(!precio||precio<=0)return alert('Ingresá el precio de venta.');
+  vN++;cN++;
+  const nv={id:`V-${String(vN).padStart(4,'0')}`,fecha:document.getElementById('vFecha').value,
+    itemId:item.id,tipo:item.tipo,marca:item.marca,talla:item.talla,cat:item.cat,
+    qty,precio,costo:item.costo,cliente:clienteInput};
+  ven.unshift(nv);
+  inv=inv.map(i=>i.id===item.id?{...i,qty:i.qty-qty}:i);
+  caja.unshift({id:`C-${String(cN).padStart(4,'0')}`,fecha:nv.fecha,tipo:'ingreso',
+    monto:precio*qty,concepto:`Venta: ${item.tipo} x${qty}`,categoria:'Ventas'});
+  // auto-add cliente si es nuevo
+  if(clienteInput!=='Sin nombre'&&!clientes.find(c=>c.nombre===clienteInput)){
+    cliN++;
+    clientes.push({id:`CLI-${String(cliN).padStart(3,'0')}`,nombre:clienteInput,tel:'',nota:''});
+    save('cam4_cli',clientes);save('cam4_cliN',cliN);
+  }
+  save('cam4_inv',inv);save('cam4_ven',ven);save('cam4_caja',caja);
+  save('cam4_vN',vN);save('cam4_cN',cN);
+  closeModal('modalVenta');renderApp();renderTabs();
+}
+
+function regCaja(){
+  const monto=Number(document.getElementById('cMonto').value);
+  const concepto=document.getElementById('cConcepto').value.trim();
+  if(!monto||!concepto)return alert('Completá monto y concepto.');
+  const tipo=document.getElementById('cTipo').value;
+  cN++;
+  const cat=tipo==='capital'?'Capital':document.getElementById('cCat').value;
+  caja.unshift({id:`C-${String(cN).padStart(4,'0')}`,fecha:document.getElementById('cFecha').value,
+    tipo,monto,concepto,categoria:cat});
+  save('cam4_caja',caja);save('cam4_cN',cN);closeModal('modalCaja');renderApp();renderTabs();
+}
+
+function delCaja(id){
+  if(!confirm('¿Eliminar este movimiento?'))return;
+  caja=caja.filter(c=>c.id!==id);save('cam4_caja',caja);renderApp();
+}
+function toggleCapital(){
+  const tipo=document.getElementById('cTipo').value;
+  const cg=document.getElementById('catGroup');
+  if(tipo==='capital'){cg.classList.add('hidden');document.getElementById('cConcepto').placeholder='Ej: Capital inicial del negocio';}
+  else{cg.classList.remove('hidden');document.getElementById('cConcepto').placeholder='Ej: Pago proveedor';}
+}
+
+function guardarCliente(){
+  const nombre=document.getElementById('cliNombre').value.trim();
+  if(!nombre)return alert('Ingresá el nombre del cliente.');
+  if(clientes.find(c=>c.nombre===nombre))return alert('Ese cliente ya existe.');
+  cliN++;
+  clientes.push({id:`CLI-${String(cliN).padStart(3,'0')}`,nombre,tel:document.getElementById('cliTel').value.trim(),nota:document.getElementById('cliNota').value.trim()});
+  save('cam4_cli',clientes);save('cam4_cliN',cliN);
+  closeModal('modalCliente');renderApp();
+}
+function delCliente(id){
+  if(!confirm('¿Eliminar este cliente?'))return;
+  clientes=clientes.filter(c=>c.id!==id);save('cam4_cli',clientes);renderApp();
+}
+
+function setStockMin(v){stockMin=Number(v)||0;save('cam4_smin',stockMin);renderTabs();}
+function closeModal(id){document.getElementById(id).classList.add('hidden');}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+// Override html font-size so 1rem = 10px → smallest text 1.5rem = 15px
+document.documentElement.style.fontSize='10px';
+renderTabs();
+renderApp();
+</script>
+</body>
+</html>
